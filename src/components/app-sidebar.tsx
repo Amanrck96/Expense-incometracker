@@ -9,8 +9,10 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarFooter,
 } from "@/components/ui/sidebar";
-import { LayoutDashboard, ArrowRightLeft, Users, PanelLeft } from "lucide-react";
+import { LayoutDashboard, ArrowRightLeft, Users, Info } from "lucide-react";
+import { CreditsDialog } from "@/components/credits-dialog";
 
 const menuItems = [
   {
@@ -62,6 +64,14 @@ export function AppSidebar() {
           ))}
         </SidebarMenu>
       </SidebarContent>
+      <SidebarFooter>
+        <CreditsDialog>
+            <SidebarMenuButton tooltip="Credits">
+                <Info />
+                <span>Credits</span>
+            </SidebarMenuButton>
+        </CreditsDialog>
+      </SidebarFooter>
     </Sidebar>
   );
 }
