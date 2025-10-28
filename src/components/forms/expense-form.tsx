@@ -43,6 +43,10 @@ const expenseCategories = [
 export function AddExpenseForm() {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date>();
+  // New state for credit/payment options
+  const [transactionType, setTransactionType] = useState<'cash' | 'credit'>('cash');
+  const [paymentMode, setPaymentMode] = useState<'cash' | 'online'>('cash');
+  const [creditDetails, setCreditDetails] = useState('');
   const [state, formAction] = useActionState(addExpenseAction, initialState);
   const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
@@ -85,8 +89,7 @@ export function AddExpenseForm() {
             Enter the details of your expense. Click save when you're done.
           </DialogDescription>
         </DialogHeader>
-        <form action={formAction} ref={formRef}>
-          <div className="grid gap-4 py-4">
+        <form action={formAction} ref={formRef}>          <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="date" className="text-right">Date</Label>
               <input type="hidden" name="date" value={date?.toISOString() || ''} />

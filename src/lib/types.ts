@@ -5,6 +5,7 @@ export type Transaction = {
   amount: number;
   isCredit?: boolean;
   paymentMethod?: 'cash' | 'online';
+  creditDetails?: string;
 };
 
 export type Expense = Transaction & {
@@ -40,5 +41,19 @@ export type Customer = {
 };
 
 export type OpeningBalance = {
-    amount: number;
-}
+  amount: number;
+};
+
+export type SystemSettings = {
+  cashInHand: number;
+  bankBalance: number;
+  lastUpdated: Date;
+};
+
+export type AuditLog = {
+  id: string;
+  timestamp: Date;
+  action: string;
+  details: string;
+  userId: string;
+};

@@ -41,6 +41,10 @@ export function AddIncomeForm({ customers }: AddIncomeFormProps) {
   const [quantity, setQuantity] = useState<number | string>('');
   const [rate, setRate] = useState<number | string>('');
   const [amount, setAmount] = useState<number | string>('');
+  // New state for credit/payment options
+  const [transactionType, setTransactionType] = useState<'cash' | 'credit'>('cash');
+  const [paymentMode, setPaymentMode] = useState<'cash' | 'online'>('cash');
+  const [creditDetails, setCreditDetails] = useState('');
   const [state, formAction] = useActionState(addIncomeAction, initialState);
   const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
@@ -94,8 +98,7 @@ export function AddIncomeForm({ customers }: AddIncomeFormProps) {
             Enter the details of your income. Click save when you're done.
           </DialogDescription>
         </DialogHeader>
-        <form action={formAction} ref={formRef}>
-          <div className="grid gap-4 py-4">
+        <form action={formAction} ref={formRef}>          <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="date" className="text-right">Date</Label>
               <input type="hidden" name="date" value={date?.toISOString() || ''} />

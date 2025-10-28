@@ -27,7 +27,10 @@ const initialState = {
 
 export function AddCustomerForm() {
   const [open, setOpen] = useState(false);
-  const [state, formAction] = useActionState(addCustomerAction, initialState);
+  const [state, formAction] = useActionState(
+    (prevState, formData: FormData) => addCustomerAction(formData),
+    initialState
+  );
   const { toast } = useToast();
 
   if (state.success && open) {

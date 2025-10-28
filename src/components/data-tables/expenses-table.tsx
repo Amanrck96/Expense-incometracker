@@ -34,6 +34,8 @@ export function ExpensesTable({ data }: ExpensesTableProps) {
   const handleDelete = (id: string) => {
     startTransition(async () => {
       await deleteTransactionAction(id);
+      // Force a client-side refresh of the data
+      window.location.reload();
       toast({
         title: "Success",
         description: "Transaction deleted successfully.",

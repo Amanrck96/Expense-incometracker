@@ -10,8 +10,11 @@ const expenseSchema = z.object({
   category: z.string().min(1, "Category is required"),
   description: z.string().min(1, "Description is required"),
   amount: z.coerce.number().positive("Amount must be positive"),
+  itemId: z.string().optional(),
+  customerId: z.string().optional(),
   isCredit: z.coerce.boolean().optional(),
-  paymentMethod: z.enum(['cash', 'online']).optional(),
+  paymentMethod: z.enum(['cash','online']).optional(),
+  creditDetails: z.string().optional(),
 });
 
 const incomeSchema = z.object({
@@ -23,7 +26,8 @@ const incomeSchema = z.object({
   amount: z.coerce.number().positive("Amount must be positive"),
   customerId: z.string().optional(),
   isCredit: z.coerce.boolean().optional(),
-  paymentMethod: z.enum(['cash', 'online']).optional(),
+  paymentMethod: z.enum(['cash','online']).optional(),
+  creditDetails: z.string().optional(),
 });
 
 const itemSchema = z.object({
@@ -132,3 +136,104 @@ export async function setOpeningBalanceAction(prevState: any, formData: FormData
     await revalidateAll();
     return { success: true, message: 'Opening balance updated.' };
 }
+
+const idSchema = z.object({ id: z.string().min(1) });
+
+export async function deleteExpenseAction(formData: FormData) {
+  const rawData = Object.fromEntries(formData.entries());
+  const validated = idSchema.safeParse(rawData);
+  if (!validated.success) {
+    return { success: false, message: 'Invalid id provided.', errors: validated.error.flatten().fieldErrors };
+  }
+  const ok = await data.deleteExpense(validated.data.id);
+  await revalidateAll();
+  return { success: ok, message: ok ? 'Expense deleted successfully.' : 'Expense not found.' };
+}
+
+export async function deleteIncomeAction(formData: FormData) {
+  const rawData = Object.fromEntries(formData.entries());
+  const validated = idSchema.safeParse(rawData);
+  if (!validated.success) {
+    return { success: false, message: 'Invalid id provided.', errors: validated.error.flatten().fieldErrors };
+  }
+  const ok = await data.deleteIncome(validated.data.id);
+  await revalidateAll();
+  return { success: ok, message: ok ? 'Income deleted successfully.' : 'Income not found.' };
+}
+
+export async function deleteItemAction(formData: FormData) {
+  const rawData = Object.fromEntries(formData.entries());
+  const validated = idSchema.safeParse(rawData);
+  if (!validated.success) {
+    return { success: false, message: 'Invalid id provided.', errors: validated.error.flatten().fieldErrors };
+  }
+  const ok = await data.deleteItem(validated.data.id);
+  await revalidateAll();
+  return { success: ok, message: ok ? 'Item deleted successfully.' : 'Item not found.' };
+}
+
+export async function deleteCustomerAction(formData: FormData) {
+  const rawData = Object.fromEntries(formData.entries());
+  const validated = idSchema.safeParse(rawData);
+  if (!validated.success) {
+    return { success: false, message: 'Invalid id provided.', errors: validated.error.flatten().fieldErrors };
+  }
+  const ok = await data.deleteCustomer(validated.data.id);
+  await revalidateAll();
+  return { success: ok, message: ok ? 'Customer deleted successfully.' : 'Customer not found.' };
+}
+
+// Bulk delete by cutoff date
+const cutoffSchema = z.object({ cutoffDate: z.coerce.date() });
+
+export async function deleteOldExpensesAction(formData: FormData) {
+  const rawData = Object.fromEntries(formData.entries());
+  const validated = cutoffSchema.safeParse(rawData);
+  if (!validated.success) {
+    return { success: false, message: 'Invalid cutoff date.', errors: validated.error.flatten().fieldErrors };
+  }
+  const count = await data.deleteExpensesBefore(validated.data.cutoffDate);
+  await revalidateAll();
+  return { success: true, message: `${count} expense(s) deleted.` };
+}
+
+export async function deleteOldIncomesAction(formData: FormData) {
+  const rawData = Object.fromEntries(formData.entries());
+  const validated = cutoffSchema.safeParse(rawData);
+  if (!validated.success) {
+    return { success: false, message: 'Invalid cutoff date.', errors: validated.error.flatten().fieldErrors };
+  }
+  const count = await data.deleteIncomesBefore(validated.data.cutoffDate);
+  await revalidateAll();
+  return { success: true, message: `${count} income(s) deleted.` };
+}
+
+// System settings schema with password validation
+const systemSettingsSchema = z.object({
+  cashInHand: z.coerce.number().optional(),
+  bankBalance: z.coerce.number().optional(),
+  password: z.string().min(1, "Password is required")
+});
+
+export async function updateSystemSettingsAction(formData: FormData) {
+  const rawData = Object.fromEntries(formData.entries());
+  const validated = systemSettingsSchema.safeParse(rawData);
+  
+  if (!validated.success) {
+    return { success: false, message: 'Invalid data provided.', errors: validated.error.flatten().fieldErrors };
+  }
+  
+  const { password, ...settings } = validated.data;
+  const result = await data.updateSystemSettings(settings, password);
+  
+  if (result.success) {
+    await revalidateAll();
+  }
+  
+  return result;
+}
+
+export async function getAuditLogsAction() {
+  return await data.getAuditLogs();
+}
+

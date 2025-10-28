@@ -6,6 +6,7 @@ import { ExpensesTable } from "@/components/data-tables/expenses-table";
 import { IncomesTable } from "@/components/data-tables/incomes-table";
 import { AddExpenseForm } from "@/components/forms/expense-form";
 import { AddIncomeForm } from "@/components/forms/income-form";
+import { BulkDeleteTransactions } from "@/components/forms/bulk-delete-transactions";
 
 export default async function TransactionsPage() {
   const [expenses, incomes, customers, items] = await Promise.all([
@@ -38,8 +39,9 @@ export default async function TransactionsPage() {
         </div>
         <TabsContent value="expenses">
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>All Expenses</CardTitle>
+              <BulkDeleteTransactions type="expense" />
             </CardHeader>
             <CardContent>
               <ExpensesTable data={expenses} />
@@ -48,8 +50,9 @@ export default async function TransactionsPage() {
         </TabsContent>
         <TabsContent value="incomes">
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>All Incomes</CardTitle>
+              <BulkDeleteTransactions type="income" />
             </CardHeader>
             <CardContent>
               <IncomesTable data={incomes} />

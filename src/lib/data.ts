@@ -1,4 +1,4 @@
-import type { Customer, Expense, Income, Item, AnyTransaction, OpeningBalance } from './types';
+import type { Customer, Expense, Income, Item, AnyTransaction, OpeningBalance, SystemSettings, AuditLog } from './types';
 
 let openingBalance: OpeningBalance = { amount: 10000 };
 
@@ -6,6 +6,16 @@ let customers: Customer[] = [
   { id: 'CUST001', name: 'John Doe', phone: '123-456-7890', address: '123 Main St', openingBalance: 1000 },
   { id: 'CUST002', name: 'Jane Smith', phone: '098-765-4321', address: '456 Oak Ave', openingBalance: 500 },
 ];
+
+// System settings with initial cash in hand of 5000 INR
+let systemSettings: SystemSettings = {
+  cashInHand: 5000,
+  bankBalance: 0,
+  lastUpdated: new Date()
+};
+
+// Audit logs for tracking system activities
+let auditLogs: AuditLog[] = [];
 
 let items: Item[] = [
   { id: 'ITEM001', name: 'Turmeric', rate: 150, unit: 'kg' },
@@ -71,7 +81,55 @@ export async function getStats() {
     const totalIncome = allIncomes.reduce((sum, i) => sum + i.amount, 0);
     const totalExpense = allExpenses.reduce((sum, e) => sum + e.amount, 0);
     const balance = ob + totalIncome - totalExpense;
-    return { openingBalance: ob, totalIncome, totalExpense, balance };
+    return {
+        openingBalance: ob,
+        totalIncome,
+        totalExpense,
+        balance,
+        cashInHand: systemSettings.cashInHand,
+        bankBalance: systemSettings.bankBalance
+    };
+}
+
+export async function getSystemSettings(): Promise<SystemSettings> {
+    await delay(100);
+    return systemSettings;
+}
+
+export async function updateSystemSettings(newSettings: Partial<SystemSettings>, password: string): Promise<{ success: boolean; message: string }> {
+    await delay(300);
+
+    // Verify admin password
+    if (password !== 'admin') {
+        addAuditLog('FAILED_AUTH', 'Failed authentication attempt for system settings update');
+        return { success: false, message: 'Authentication failed. Incorrect password.' };
+    }
+
+    // Update settings
+    systemSettings = {
+        ...systemSettings,
+        ...newSettings,
+        lastUpdated: new Date()
+    };
+
+    addAuditLog('SETTINGS_UPDATE', `System settings updated: ${JSON.stringify(newSettings)}`);
+    return { success: true, message: 'Settings updated successfully' };
+}
+
+export async function getAuditLogs(): Promise<AuditLog[]> {
+    await delay(100);
+    return auditLogs.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+}
+
+function addAuditLog(action: string, details: string, userId: string = 'admin'): void {
+    const newLog: AuditLog = {
+        id: `LOG${String(Date.now()).slice(-6)}`,
+        timestamp: new Date(),
+        action,
+        details,
+        userId
+    };
+    auditLogs = [newLog, ...auditLogs];
 }
 
 export async function addCustomer(customer: Omit<Customer, 'id'>): Promise<Customer> {
@@ -112,4 +170,47 @@ export async function deleteTransaction(id: string): Promise<{ success: boolean 
 
     const wasDeleted = incomes.length < initialIncomesLength || expenses.length < initialExpensesLength;
     return { success: wasDeleted };
+}
+
+export async function deleteExpense(id: string): Promise<boolean> {
+    await delay(200);
+    const before = expenses.length;
+    expenses = expenses.filter((e) => e.id !== id);
+    return expenses.length < before;
+}
+
+export async function deleteIncome(id: string): Promise<boolean> {
+    await delay(200);
+    const before = incomes.length;
+    incomes = incomes.filter((i) => i.id !== id);
+    return incomes.length < before;
+}
+
+// Bulk delete helpers
+export async function deleteExpensesBefore(cutoff: Date): Promise<number> {
+  await delay(200);
+  const before = expenses.length;
+  expenses = expenses.filter((e) => e.date >= cutoff);
+  return before - expenses.length;
+}
+
+export async function deleteIncomesBefore(cutoff: Date): Promise<number> {
+  await delay(200);
+  const before = incomes.length;
+  incomes = incomes.filter((i) => i.date >= cutoff);
+  return before - incomes.length;
+}
+
+export async function deleteCustomer(id: string): Promise<boolean> {
+  await delay(200);
+  const before = customers.length;
+  customers = customers.filter((c) => c.id !== id);
+  return customers.length < before;
+}
+
+export async function deleteItem(id: string): Promise<boolean> {
+  await delay(200);
+  const before = items.length;
+  items = items.filter((it) => it.id !== id);
+  return items.length < before;
 }

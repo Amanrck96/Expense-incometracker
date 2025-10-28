@@ -7,6 +7,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { Customer } from "@/lib/types";
+import { SubmitButton } from "@/components/forms/submit-button";
+import { deleteCustomerAction } from "@/app/actions";
 
 type CustomersTableProps = {
   data: Customer[];
@@ -29,12 +31,13 @@ export function CustomersTable({ data }: CustomersTableProps) {
           <TableHead>Phone</TableHead>
           <TableHead>Address</TableHead>
           <TableHead className="text-right">Opening Balance</TableHead>
+          <TableHead className="text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {data.length === 0 && (
           <TableRow>
-            <TableCell colSpan={5} className="text-center">
+            <TableCell colSpan={6} className="text-center">
               No customers yet.
             </TableCell>
           </TableRow>
@@ -46,6 +49,12 @@ export function CustomersTable({ data }: CustomersTableProps) {
             <TableCell>{customer.phone}</TableCell>
             <TableCell>{customer.address}</TableCell>
             <TableCell className="text-right">{formatCurrency(customer.openingBalance)}</TableCell>
+            <TableCell className="text-right">
+              <form action={deleteCustomerAction}>
+                <input type="hidden" name="id" value={customer.id} />
+                <SubmitButton variant="destructive" size="sm">Delete</SubmitButton>
+              </form>
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
