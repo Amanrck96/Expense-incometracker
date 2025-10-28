@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Table,
   TableBody,
@@ -9,6 +11,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import type { AnyTransaction } from "@/lib/types";
 import { format } from "date-fns";
+import { Button } from "../ui/button";
+import { Trash2 } from "lucide-react";
+import { useTransition } from "react";
+import { deleteTransactionAction } from "@/app/actions";
+import { useToast } from "@/hooks/use-toast";
 
 type RecentTransactionsTableProps = {
   data: AnyTransaction[];
@@ -22,6 +29,19 @@ const formatCurrency = (amount: number) => {
 };
 
 export function RecentTransactionsTable({ data }: RecentTransactionsTableProps) {
+  const [isPending, startTransition] = useTransition();
+  const { toast } = useToast();
+
+  const handleDelete = (id: string) => {
+    startTransition(async () => {
+      await deleteTransactionAction(id);
+      toast({
+        title: "Success",
+        description: "Transaction deleted successfully.",
+      });
+    });
+  };
+  
   return (
     <Table>
       <TableHeader>
@@ -30,12 +50,13 @@ export function RecentTransactionsTable({ data }: RecentTransactionsTableProps) 
           <TableHead>Type</TableHead>
           <TableHead>Date</TableHead>
           <TableHead className="text-right">Amount</TableHead>
+          <TableHead className="text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {data.length === 0 && (
           <TableRow>
-            <TableCell colSpan={4} className="text-center">
+            <TableCell colSpan={5} className="text-center">
               No transactions yet.
             </TableCell>
           </TableRow>
@@ -52,6 +73,17 @@ export function RecentTransactionsTable({ data }: RecentTransactionsTableProps) 
             </TableCell>
             <TableCell>{format(transaction.date, 'PPP')}</TableCell>
             <TableCell className="text-right">{formatCurrency(transaction.amount)}</TableCell>
+            <TableCell className="text-right">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => handleDelete(transaction.id)}
+                disabled={isPending}
+              >
+                <Trash2 className="h-4 w-4" />
+                <span className="sr-only">Delete</span>
+              </Button>
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
