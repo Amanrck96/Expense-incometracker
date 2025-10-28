@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
-import { LayoutDashboard, ArrowRightLeft, Users, Package, CircleDollarSign } from "lucide-react";
+import { LayoutDashboard, ArrowRightLeft, Users, IndianRupee } from "lucide-react";
 
 const menuItems = [
   {
@@ -37,7 +37,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader>
         <Link href="/dashboard" className="flex items-center gap-2">
-            <CircleDollarSign className="w-8 h-8 text-primary" />
+            <IndianRupee className="w-8 h-8 text-primary" />
             <span className="font-bold text-lg text-foreground">TrackIt</span>
         </Link>
       </SidebarHeader>
