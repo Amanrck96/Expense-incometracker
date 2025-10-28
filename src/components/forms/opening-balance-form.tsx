@@ -1,5 +1,5 @@
 "use client";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { setOpeningBalanceAction } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
@@ -19,21 +19,22 @@ export function OpeningBalanceForm({ amount }: OpeningBalanceFormProps) {
     const [state, formAction] = useActionState(setOpeningBalanceAction, initialState);
     const { toast } = useToast();
 
-    if (state.success) {
-        toast({
-            title: "Success",
-            description: state.message,
-        });
-        state.success = false;
-    }
-    
-    if (state.message && !state.success) {
-        toast({
-            variant: 'destructive',
-            title: "Error",
-            description: state.message,
-        });
-    }
+    useEffect(() => {
+        if (state.success) {
+            toast({
+                title: "Success",
+                description: state.message,
+            });
+            state.success = false;
+        } else if (state.message) {
+            toast({
+                variant: 'destructive',
+                title: "Error",
+                description: state.message,
+            });
+        }
+    }, [state, toast]);
+
 
     return (
         <form action={formAction} className="space-y-4">

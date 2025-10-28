@@ -120,7 +120,7 @@ export async function deleteTransactionAction(id: string) {
     await revalidateAll();
 }
 
-export async function setOpeningBalanceAction(formData: FormData) {
+export async function setOpeningBalanceAction(prevState: any, formData: FormData) {
     const rawData = Object.fromEntries(formData.entries());
     const validatedFields = openingBalanceSchema.safeParse(rawData);
     
