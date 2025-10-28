@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
-import { LayoutDashboard, ArrowRightLeft, Users } from "lucide-react";
+import { LayoutDashboard, ArrowRightLeft, Users, PanelLeft } from "lucide-react";
 
 const menuItems = [
   {
