@@ -28,13 +28,15 @@ export function IncomesTable({ data }: IncomesTableProps) {
           <TableHead>Date</TableHead>
           <TableHead>Source</TableHead>
           <TableHead>Description</TableHead>
-          <TableHead className="text-right">Amount</TableHead>
+          <TableHead className="text-right">Quantity</TableHead>
+          <TableHead className="text-right">Rate</TableHead>
+          <TableHead className="text-right">Total Amount</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {data.length === 0 && (
           <TableRow>
-            <TableCell colSpan={4} className="text-center">
+            <TableCell colSpan={6} className="text-center">
               No incomes yet.
             </TableCell>
           </TableRow>
@@ -44,6 +46,8 @@ export function IncomesTable({ data }: IncomesTableProps) {
             <TableCell>{format(income.date, 'PPP')}</TableCell>
             <TableCell>{income.source}</TableCell>
             <TableCell className="font-medium">{income.description}</TableCell>
+            <TableCell className="text-right">{income.quantity}</TableCell>
+            <TableCell className="text-right">{income.rate ? formatCurrency(income.rate) : ''}</TableCell>
             <TableCell className="text-right">{formatCurrency(income.amount)}</TableCell>
           </TableRow>
         ))}

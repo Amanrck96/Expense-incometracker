@@ -16,6 +16,8 @@ export type Income = Transaction & {
   type: 'income';
   source: string;
   customerId?: string;
+  quantity?: number;
+  rate?: number;
 };
 
 export type AnyTransaction = Expense | Income;

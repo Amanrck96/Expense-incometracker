@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useActionState } from "react";
+import { useState, useActionState, useEffect } from "react";
 import { addIncomeAction } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
 import type { Customer } from "@/lib/types";
@@ -35,11 +35,26 @@ const initialState = {
 export function AddIncomeForm({ customers }: AddIncomeFormProps) {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date>();
+  const [quantity, setQuantity] = useState<number | string>('');
+  const [rate, setRate] = useState<number | string>('');
+  const [amount, setAmount] = useState<number | string>('');
   const [state, formAction] = useActionState(addIncomeAction, initialState);
   const { toast } = useToast();
 
+  useEffect(() => {
+    const q = Number(quantity);
+    const r = Number(rate);
+    if (!isNaN(q) && !isNaN(r)) {
+      setAmount(q * r);
+    }
+  }, [quantity, rate]);
+
   if (state.success && open) {
     setOpen(false);
+    setQuantity('');
+    setRate('');
+    setAmount('');
+    setDate(undefined);
     toast({
         title: "Success",
         description: state.message,
@@ -86,8 +101,16 @@ export function AddIncomeForm({ customers }: AddIncomeFormProps) {
               <Input id="description" name="description" placeholder="Notes or invoice details" className="col-span-3" />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="amount" className="text-right">Amount (INR)</Label>
-              <Input id="amount" name="amount" type="number" step="0.01" placeholder="0.00" className="col-span-3" />
+                <Label htmlFor="quantity" className="text-right">Quantity</Label>
+                <Input id="quantity" name="quantity" type="number" step="any" placeholder="0" className="col-span-3" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="rate" className="text-right">Rate (INR)</Label>
+                <Input id="rate" name="rate" type="number" step="0.01" placeholder="0.00" className="col-span-3" value={rate} onChange={(e) => setRate(e.target.value)} />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="amount" className="text-right">Total Amount (INR)</Label>
+              <Input id="amount" name="amount" type="number" step="0.01" placeholder="0.00" className="col-span-3" value={amount} readOnly />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="customerId" className="text-right">Customer</Label>

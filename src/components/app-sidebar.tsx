@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
-import { LayoutDashboard, ArrowRightLeft, Users, IndianRupee } from "lucide-react";
+import { LayoutDashboard, ArrowRightLeft, Users } from "lucide-react";
 
 const menuItems = [
   {
@@ -36,10 +36,13 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <Link href="/dashboard" className="flex items-center gap-2">
-            <IndianRupee className="w-8 h-8 text-primary" />
-            <span className="font-bold text-lg text-foreground">TrackIt</span>
-        </Link>
+        <div className="flex flex-col items-center gap-2 text-center">
+            <span className="font-bold text-lg text-foreground">m/s Bhola prasad sah</span>
+            <div className="text-xs text-muted-foreground">
+                <p>s.n road gala patty cooch behar</p>
+                <p>lic no 145/p/sad/96</p>
+            </div>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>

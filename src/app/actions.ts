@@ -18,6 +18,8 @@ const incomeSchema = z.object({
   date: z.coerce.date(),
   source: z.string().min(1, "Source is required"),
   description: z.string().min(1, "Description is required"),
+  quantity: z.coerce.number().optional(),
+  rate: z.coerce.number().optional(),
   amount: z.coerce.number().positive("Amount must be positive"),
   customerId: z.string().optional(),
 });

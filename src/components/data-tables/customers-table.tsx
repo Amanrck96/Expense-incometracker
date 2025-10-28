@@ -24,6 +24,7 @@ export function CustomersTable({ data }: CustomersTableProps) {
     <Table>
       <TableHeader>
         <TableRow>
+          <TableHead>Sl. No.</TableHead>
           <TableHead>Name</TableHead>
           <TableHead>Phone</TableHead>
           <TableHead>Address</TableHead>
@@ -33,13 +34,14 @@ export function CustomersTable({ data }: CustomersTableProps) {
       <TableBody>
         {data.length === 0 && (
           <TableRow>
-            <TableCell colSpan={4} className="text-center">
+            <TableCell colSpan={5} className="text-center">
               No customers yet.
             </TableCell>
           </TableRow>
         )}
         {data.map((customer) => (
           <TableRow key={customer.id}>
+            <TableCell>{customer.id}</TableCell>
             <TableCell className="font-medium">{customer.name}</TableCell>
             <TableCell>{customer.phone}</TableCell>
             <TableCell>{customer.address}</TableCell>
