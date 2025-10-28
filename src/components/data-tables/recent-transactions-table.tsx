@@ -51,14 +51,21 @@ export function RecentTransactionsTable({ data }: RecentTransactionsTableProps) 
     startTransition(async () => {
       try {
         const result = await deleteTransactionAction(id);
-        toast({
-          title: "Success",
-          description: "Transaction deleted successfully.",
-        });
-        // Use a small timeout to ensure the toast is visible before reload
-        setTimeout(() => {
-          window.location.reload();
-        }, 500);
+        if (result?.success) {
+          toast({
+            title: "Success",
+            description: "Transaction deleted successfully.",
+          });
+          setTimeout(() => {
+            window.location.reload();
+          }, 500);
+        } else {
+          toast({
+            title: "Not found",
+            description: "Transaction not found or already deleted.",
+            variant: "destructive",
+          });
+        }
       } catch (error) {
         toast({
           title: "Error",

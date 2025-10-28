@@ -120,8 +120,9 @@ export async function exportData() {
 }
 
 export async function deleteTransactionAction(id: string) {
-    await data.deleteTransaction(id);
+    const result = await data.deleteTransaction(id);
     await revalidateAll();
+    return result;
 }
 
 export async function setOpeningBalanceAction(prevState: any, formData: FormData) {
@@ -236,4 +237,4 @@ export async function updateSystemSettingsAction(formData: FormData) {
 export async function getAuditLogsAction() {
   return await data.getAuditLogs();
 }
-
+
