@@ -10,8 +10,8 @@ const expenseSchema = z.object({
   category: z.string().min(1, "Category is required"),
   description: z.string().min(1, "Description is required"),
   amount: z.coerce.number().positive("Amount must be positive"),
-  itemId: z.string().optional(),
-  customerId: z.string().optional(),
+  isCredit: z.coerce.boolean().optional(),
+  paymentMethod: z.enum(['cash', 'online']).optional(),
 });
 
 const incomeSchema = z.object({
@@ -22,6 +22,8 @@ const incomeSchema = z.object({
   rate: z.coerce.number().optional(),
   amount: z.coerce.number().positive("Amount must be positive"),
   customerId: z.string().optional(),
+  isCredit: z.coerce.boolean().optional(),
+  paymentMethod: z.enum(['cash', 'online']).optional(),
 });
 
 const itemSchema = z.object({
@@ -35,6 +37,10 @@ const customerSchema = z.object({
   phone: z.string().min(1, "Phone is required"),
   address: z.string().min(1, "Address is required"),
   openingBalance: z.coerce.number().default(0),
+});
+
+const openingBalanceSchema = z.object({
+    amount: z.coerce.number(),
 });
 
 async function revalidateAll() {
@@ -107,4 +113,22 @@ export async function exportData() {
     customers,
     items,
   };
+}
+
+export async function deleteTransactionAction(id: string) {
+    await data.deleteTransaction(id);
+    await revalidateAll();
+}
+
+export async function setOpeningBalanceAction(formData: FormData) {
+    const rawData = Object.fromEntries(formData.entries());
+    const validatedFields = openingBalanceSchema.safeParse(rawData);
+    
+    if (!validatedFields.success) {
+        return { success: false, message: 'Invalid data provided.' };
+    }
+
+    await data.setOpeningBalance({ amount: validatedFields.data.amount });
+    await revalidateAll();
+    return { success: true, message: 'Opening balance updated.' };
 }

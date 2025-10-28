@@ -3,6 +3,7 @@ import { PageHeader } from "@/components/page-header";
 import { DashboardStats } from "@/components/dashboard-stats";
 import { RecentTransactionsTable } from "@/components/data-tables/recent-transactions-table";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { OpeningBalanceForm } from "@/components/forms/opening-balance-form";
 
 export default async function DashboardPage() {
   const stats = await getStats();
@@ -12,14 +13,28 @@ export default async function DashboardPage() {
     <PageHeader title="Dashboard" description="An overview of your financial activity.">
       <div className="space-y-8">
         <DashboardStats stats={stats} />
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Transactions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <RecentTransactionsTable data={recentTransactions} />
-          </CardContent>
-        </Card>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+                <Card>
+                <CardHeader>
+                    <CardTitle>Recent Transactions</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <RecentTransactionsTable data={recentTransactions} />
+                </CardContent>
+                </Card>
+            </div>
+            <div>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>System Settings</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                       <OpeningBalanceForm amount={stats.openingBalance} />
+                    </CardContent>
+                </Card>
+            </div>
+        </div>
       </div>
     </PageHeader>
   );

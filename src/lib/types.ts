@@ -3,6 +3,8 @@ export type Transaction = {
   date: Date;
   description: string;
   amount: number;
+  isCredit?: boolean;
+  paymentMethod?: 'cash' | 'online';
 };
 
 export type Expense = Transaction & {
@@ -36,3 +38,7 @@ export type Customer = {
   address: string;
   openingBalance: number;
 };
+
+export type OpeningBalance = {
+    amount: number;
+}

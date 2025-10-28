@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useActionState } from "react";
+import { useState, useActionState, useRef, useEffect } from "react";
 import { addExpenseAction } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
 
@@ -18,6 +18,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DatePicker } from "@/components/ui/datepicker";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { PlusCircle } from "lucide-react";
 import { SubmitButton } from "@/components/forms/submit-button";
 
@@ -42,23 +44,30 @@ export function AddExpenseForm() {
   const [date, setDate] = useState<Date>();
   const [state, formAction] = useActionState(addExpenseAction, initialState);
   const { toast } = useToast();
+  const formRef = useRef<HTMLFormElement>(null);
 
-  if (state.success && open) {
-    setOpen(false);
-    toast({
-        title: "Success",
+  useEffect(() => {
+    if (state.success && open) {
+      setOpen(false);
+      setDate(undefined);
+      formRef.current?.reset();
+      toast({
+          title: "Success",
+          description: state.message,
+      });
+      // This is a workaround to reset the state of useActionState
+      state.success = false; 
+    }
+    
+    if (state.message && !state.success && state.errors) {
+      toast({
+        variant: 'destructive',
+        title: "Error",
         description: state.message,
-    });
-    state.success = false; // Reset for next time
-  }
+      });
+    }
+  }, [state, open, toast]);
   
-  if (state.message && !state.success && state.errors) {
-    toast({
-      variant: 'destructive',
-      title: "Error",
-      description: state.message,
-    });
-  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -75,7 +84,7 @@ export function AddExpenseForm() {
             Enter the details of your expense. Click save when you're done.
           </DialogDescription>
         </DialogHeader>
-        <form action={formAction}>
+        <form action={formAction} ref={formRef}>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="date" className="text-right">Date</Label>
@@ -102,6 +111,26 @@ export function AddExpenseForm() {
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="amount" className="text-right">Amount (INR)</Label>
               <Input id="amount" name="amount" type="number" step="0.01" placeholder="0.00" className="col-span-3" />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="paymentMethod" className="text-right">Payment</Label>
+              <RadioGroup name="paymentMethod" defaultValue="cash" className="col-span-3 flex gap-4">
+                <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="cash" id="cash" />
+                    <Label htmlFor="cash">Cash</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="online" id="online" />
+                    <Label htmlFor="online">Online</Label>
+                </div>
+              </RadioGroup>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="isCredit" className="text-right">Credit</Label>
+                <div className="col-span-3 flex items-center">
+                    <Checkbox id="isCredit" name="isCredit" />
+                    <Label htmlFor="isCredit" className="ml-2 text-sm font-medium">Is this a credit transaction?</Label>
+                </div>
             </div>
           </div>
           <DialogFooter>

@@ -1,3 +1,4 @@
+"use client";
 import {
   Table,
   TableBody,
@@ -8,6 +9,12 @@ import {
 } from "@/components/ui/table";
 import type { Income } from "@/lib/types";
 import { format } from "date-fns";
+import { Button } from "../ui/button";
+import { Trash2 } from "lucide-react";
+import { useTransition } from "react";
+import { deleteTransactionAction } from "@/app/actions";
+import { useToast } from "@/hooks/use-toast";
+import { Badge } from "../ui/badge";
 
 type IncomesTableProps = {
   data: Income[];
@@ -21,6 +28,19 @@ const formatCurrency = (amount: number) => {
 };
 
 export function IncomesTable({ data }: IncomesTableProps) {
+  const [isPending, startTransition] = useTransition();
+  const { toast } = useToast();
+
+  const handleDelete = (id: string) => {
+    startTransition(async () => {
+      await deleteTransactionAction(id);
+      toast({
+        title: "Success",
+        description: "Transaction deleted successfully.",
+      });
+    });
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -30,13 +50,16 @@ export function IncomesTable({ data }: IncomesTableProps) {
           <TableHead>Description</TableHead>
           <TableHead className="text-right">Quantity</TableHead>
           <TableHead className="text-right">Rate</TableHead>
+          <TableHead>Payment</TableHead>
+          <TableHead>Credit</TableHead>
           <TableHead className="text-right">Total Amount</TableHead>
+          <TableHead className="text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {data.length === 0 && (
           <TableRow>
-            <TableCell colSpan={6} className="text-center">
+            <TableCell colSpan={9} className="text-center">
               No incomes yet.
             </TableCell>
           </TableRow>
@@ -48,7 +71,22 @@ export function IncomesTable({ data }: IncomesTableProps) {
             <TableCell className="font-medium">{income.description}</TableCell>
             <TableCell className="text-right">{income.quantity}</TableCell>
             <TableCell className="text-right">{income.rate ? formatCurrency(income.rate) : ''}</TableCell>
+            <TableCell className="capitalize">{income.paymentMethod}</TableCell>
+            <TableCell>
+                {income.isCredit && <Badge>Credit</Badge>}
+            </TableCell>
             <TableCell className="text-right">{formatCurrency(income.amount)}</TableCell>
+            <TableCell className="text-right">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => handleDelete(income.id)}
+                disabled={isPending}
+              >
+                <Trash2 className="h-4 w-4" />
+                <span className="sr-only">Delete</span>
+              </Button>
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>

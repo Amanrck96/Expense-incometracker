@@ -15,6 +15,9 @@ export default async function TransactionsPage() {
     getItems(),
   ]);
 
+  const creditExpenses = expenses.filter(e => e.isCredit);
+  const creditIncomes = incomes.filter(i => i.isCredit);
+
   return (
     <PageHeader
       title="Transactions"
@@ -25,6 +28,8 @@ export default async function TransactionsPage() {
           <TabsList>
             <TabsTrigger value="expenses">Expenses</TabsTrigger>
             <TabsTrigger value="incomes">Incomes</TabsTrigger>
+            <TabsTrigger value="credit-expenses">Credit Expenses</TabsTrigger>
+            <TabsTrigger value="credit-incomes">Credit Incomes</TabsTrigger>
           </TabsList>
           <div className="flex gap-2">
              <AddExpenseForm />
@@ -48,6 +53,26 @@ export default async function TransactionsPage() {
             </CardHeader>
             <CardContent>
               <IncomesTable data={incomes} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="credit-expenses">
+          <Card>
+            <CardHeader>
+              <CardTitle>Credit Expenses</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ExpensesTable data={creditExpenses} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="credit-incomes">
+          <Card>
+            <CardHeader>
+              <CardTitle>Credit Incomes</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <IncomesTable data={creditIncomes} />
             </CardContent>
           </Card>
         </TabsContent>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useActionState, useEffect } from "react";
+import { useState, useActionState, useEffect, useRef } from "react";
 import { addIncomeAction } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
 import type { Customer } from "@/lib/types";
@@ -19,6 +19,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DatePicker } from "@/components/ui/datepicker";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { PlusCircle } from "lucide-react";
 import { SubmitButton } from "@/components/forms/submit-button";
 
@@ -40,6 +42,8 @@ export function AddIncomeForm({ customers }: AddIncomeFormProps) {
   const [amount, setAmount] = useState<number | string>('');
   const [state, formAction] = useActionState(addIncomeAction, initialState);
   const { toast } = useToast();
+  const formRef = useRef<HTMLFormElement>(null);
+
 
   useEffect(() => {
     const q = Number(quantity);
@@ -48,27 +52,31 @@ export function AddIncomeForm({ customers }: AddIncomeFormProps) {
       setAmount(q * r);
     }
   }, [quantity, rate]);
-
-  if (state.success && open) {
-    setOpen(false);
-    setQuantity('');
-    setRate('');
-    setAmount('');
-    setDate(undefined);
-    toast({
-        title: "Success",
-        description: state.message,
-    });
-    state.success = false;
-  }
   
-  if (state.message && !state.success && state.errors) {
-    toast({
-      variant: 'destructive',
-      title: "Error",
-      description: state.message,
-    });
-  }
+  useEffect(() => {
+    if (state.success && open) {
+      setOpen(false);
+      setQuantity('');
+      setRate('');
+      setAmount('');
+      setDate(undefined);
+      formRef.current?.reset();
+      toast({
+          title: "Success",
+          description: state.message,
+      });
+      state.success = false;
+    }
+    
+    if (state.message && !state.success && state.errors) {
+      toast({
+        variant: 'destructive',
+        title: "Error",
+        description: state.message,
+      });
+    }
+  }, [state, open, toast]);
+
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -85,7 +93,7 @@ export function AddIncomeForm({ customers }: AddIncomeFormProps) {
             Enter the details of your income. Click save when you're done.
           </DialogDescription>
         </DialogHeader>
-        <form action={formAction}>
+        <form action={formAction} ref={formRef}>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="date" className="text-right">Date</Label>
@@ -124,6 +132,26 @@ export function AddIncomeForm({ customers }: AddIncomeFormProps) {
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="paymentMethod" className="text-right">Payment</Label>
+              <RadioGroup name="paymentMethod" defaultValue="cash" className="col-span-3 flex gap-4">
+                <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="cash" id="cash-income" />
+                    <Label htmlFor="cash-income">Cash</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="online" id="online-income" />
+                    <Label htmlFor="online-income">Online</Label>
+                </div>
+              </RadioGroup>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="isCredit-income" className="text-right">Credit</Label>
+                <div className="col-span-3 flex items-center">
+                    <Checkbox id="isCredit-income" name="isCredit" />
+                    <Label htmlFor="isCredit-income" className="ml-2 text-sm font-medium">Is this a credit transaction?</Label>
+                </div>
             </div>
           </div>
           <DialogFooter>
