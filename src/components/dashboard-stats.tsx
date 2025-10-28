@@ -21,7 +21,7 @@ const formatCurrency = (amount: number) => {
 export function DashboardStats({ stats }: DashboardStatsProps) {
   return (
     <div className="grid gap-4 md:grid-cols-3">
-      <Card>
+      <Card className="fade-in" style={{ animationDelay: '100ms' }}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Total Income</CardTitle>
           <TrendingUp className="h-4 w-4 text-muted-foreground" />
@@ -30,7 +30,7 @@ export function DashboardStats({ stats }: DashboardStatsProps) {
           <div className="text-2xl font-bold">{formatCurrency(stats.totalIncome)}</div>
         </CardContent>
       </Card>
-      <Card>
+      <Card className="fade-in" style={{ animationDelay: '200ms' }}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Total Expenses</CardTitle>
           <TrendingDown className="h-4 w-4 text-muted-foreground" />
@@ -39,7 +39,7 @@ export function DashboardStats({ stats }: DashboardStatsProps) {
           <div className="text-2xl font-bold">{formatCurrency(stats.totalExpense)}</div>
         </CardContent>
       </Card>
-      <Card>
+      <Card className="fade-in" style={{ animationDelay: '300ms' }}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Balance</CardTitle>
           <Scale className="h-4 w-4 text-muted-foreground" />

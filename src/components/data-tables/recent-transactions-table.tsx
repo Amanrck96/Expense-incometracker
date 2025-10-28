@@ -40,12 +40,12 @@ export function RecentTransactionsTable({ data }: RecentTransactionsTableProps) 
             </TableCell>
           </TableRow>
         )}
-        {data.map((transaction) => (
-          <TableRow key={transaction.id}>
+        {data.map((transaction, index) => (
+          <TableRow key={transaction.id} className="fade-in" style={{ animationDelay: `${index * 100}ms` }}>
             <TableCell className="font-medium">{transaction.description}</TableCell>
             <TableCell>
               <Badge variant={transaction.type === 'income' ? 'default' : 'secondary'}
-                className={transaction.type === 'income' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}
+                className={transaction.type === 'income' ? 'bg-green-700/20 text-green-500' : 'bg-red-700/20 text-red-500'}
               >
                 {transaction.type}
               </Badge>
