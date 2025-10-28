@@ -36,11 +36,11 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <div className="flex flex-col items-center gap-2 text-center">
+        <div className="flex flex-col gap-1 p-2">
             <span className="font-bold text-lg text-foreground">m/s Bhola prasad sah</span>
-            <div className="text-xs text-muted-foreground">
+            <div className="text-sm text-muted-foreground">
                 <p>s.n road gala patty cooch behar</p>
-                <p>lic no 145/p/sad/96</p>
+                <p className="text-xs">lic no 145/p/sad/96</p>
             </div>
         </div>
       </SidebarHeader>
