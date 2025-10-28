@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useFormState } from "react-dom";
+import { useState, useActionState } from "react";
 import { addExpenseAction } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
 import type { Customer, Item } from "@/lib/types";
@@ -37,7 +36,7 @@ const initialState = {
 export function AddExpenseForm({ customers, items }: AddExpenseFormProps) {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date>();
-  const [state, formAction] = useFormState(addExpenseAction, initialState);
+  const [state, formAction] = useActionState(addExpenseAction, initialState);
   const { toast } = useToast();
 
   if (state.success && open) {

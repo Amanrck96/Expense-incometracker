@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useFormState } from "react-dom";
+import { useState, useActionState } from "react";
 import { addIncomeAction } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
 import type { Customer } from "@/lib/types";
@@ -36,7 +35,7 @@ const initialState = {
 export function AddIncomeForm({ customers }: AddIncomeFormProps) {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date>();
-  const [state, formAction] = useFormState(addIncomeAction, initialState);
+  const [state, formAction] = useActionState(addIncomeAction, initialState);
   const { toast } = useToast();
 
   if (state.success && open) {

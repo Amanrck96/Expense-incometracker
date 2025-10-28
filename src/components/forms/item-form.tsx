@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useFormState } from "react-dom";
+import { useState, useActionState } from "react";
 import { addItemAction } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
 
@@ -28,7 +27,7 @@ const initialState = {
 
 export function AddItemForm() {
   const [open, setOpen] = useState(false);
-  const [state, formAction] = useFormState(addItemAction, initialState);
+  const [state, formAction] = useActionState(addItemAction, initialState);
   const { toast } = useToast();
 
   if (state.success && open) {
