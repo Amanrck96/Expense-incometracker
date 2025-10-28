@@ -33,6 +33,16 @@ const initialState = {
   success: false,
 };
 
+const expenseCategories = [
+    "pan and supari",
+    "chicken for dogs",
+    "Vegetable",
+    "bike petrol",
+    "labour wages",
+    "Fruit",
+    "Snacks"
+];
+
 export function AddExpenseForm({ customers, items }: AddExpenseFormProps) {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date>();
@@ -80,7 +90,16 @@ export function AddExpenseForm({ customers, items }: AddExpenseFormProps) {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="category" className="text-right">Category</Label>
-              <Input id="category" name="category" placeholder="e.g., Purchase, Rent" className="col-span-3" />
+              <Select name="category">
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {expenseCategories.map(category => (
+                    <SelectItem key={category} value={category}>{category}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="description" className="text-right">Description</Label>
