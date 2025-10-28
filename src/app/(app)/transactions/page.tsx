@@ -27,7 +27,7 @@ export default async function TransactionsPage() {
             <TabsTrigger value="incomes">Incomes</TabsTrigger>
           </TabsList>
           <div className="flex gap-2">
-             <AddExpenseForm customers={customers} items={items} />
+             <AddExpenseForm />
              <AddIncomeForm customers={customers} />
           </div>
         </div>
