@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useActionState, useRef, useEffect } from "react";
@@ -88,7 +89,7 @@ export function AddExpenseForm() {
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="date" className="text-right">Date</Label>
-              <input type="hidden" name="date" value={date?.toISOString()} />
+              <input type="hidden" name="date" value={date?.toISOString() || ''} />
               <DatePicker value={date} onChange={setDate} placeholder="Today" className="col-span-3" />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
