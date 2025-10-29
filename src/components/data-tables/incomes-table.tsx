@@ -36,6 +36,7 @@ export function IncomesTable({ data }: IncomesTableProps) {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const { isAuthenticated } = useAuth();
+  const [rows, setRows] = useState<Income[]>(data);
 
   const handleDelete = (id: string) => {
     if (isAuthenticated) {
@@ -50,13 +51,11 @@ export function IncomesTable({ data }: IncomesTableProps) {
     startTransition(async () => {
       const result = await deleteTransactionAction(id);
       if (result?.success) {
+        setRows((prev) => prev.filter((i) => i.id !== id));
         toast({
           title: "Success",
           description: "Transaction deleted successfully.",
         });
-        setTimeout(() => {
-          window.location.reload();
-        }, 500);
       } else {
         toast({
           title: "Not found",
@@ -84,14 +83,14 @@ export function IncomesTable({ data }: IncomesTableProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.length === 0 && (
+          {rows.length === 0 && (
             <TableRow>
               <TableCell colSpan={9} className="text-center">
                 No incomes yet.
               </TableCell>
             </TableRow>
           )}
-          {data.map((income) => (
+          {rows.map((income) => (
             <TableRow key={income.id}>
               <TableCell>{format(income.date, 'PPP')}</TableCell>
               <TableCell>{income.source}</TableCell>

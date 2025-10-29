@@ -36,6 +36,7 @@ export function ExpensesTable({ data }: ExpensesTableProps) {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const { isAuthenticated } = useAuth();
+  const [rows, setRows] = useState<Expense[]>(data);
 
   const handleDelete = (id: string) => {
     if (isAuthenticated) {
@@ -50,13 +51,11 @@ export function ExpensesTable({ data }: ExpensesTableProps) {
     startTransition(async () => {
       const result = await deleteTransactionAction(id);
       if (result?.success) {
+        setRows((prev) => prev.filter((e) => e.id !== id));
         toast({
           title: "Success",
           description: "Transaction deleted successfully.",
         });
-        setTimeout(() => {
-          window.location.reload();
-        }, 500);
       } else {
         toast({
           title: "Not found",
@@ -82,14 +81,14 @@ export function ExpensesTable({ data }: ExpensesTableProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.length === 0 && (
+          {rows.length === 0 && (
             <TableRow>
               <TableCell colSpan={7} className="text-center">
                 No expenses yet.
               </TableCell>
             </TableRow>
           )}
-          {data.map((expense) => (
+          {rows.map((expense) => (
             <TableRow key={expense.id}>
               <TableCell>{format(expense.date, 'PPP')}</TableCell>
               <TableCell>{expense.category}</TableCell>

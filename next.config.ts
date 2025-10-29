@@ -1,3 +1,5 @@
+const path = require('path');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   typescript: {
@@ -7,7 +9,6 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    unoptimized: true, // Required for static export
     remotePatterns: [
       {
         protocol: 'https',
@@ -29,10 +30,8 @@ const nextConfig = {
       },
     ],
   },
-  // Static export configuration
-  output: 'export',
-  // Ensure proper handling of routes
-  trailingSlash: true,
+  // Ensure Next.js traces files relative to this project root
+  outputFileTracingRoot: __dirname,
 };
 
 module.exports = nextConfig;

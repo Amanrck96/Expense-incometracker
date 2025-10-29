@@ -8,6 +8,8 @@ import { SystemSettingsForm } from "@/components/forms/system-settings-form";
 import { AuditLogComponent } from "@/components/audit-log";
 import { GitHubSync } from "@/components/github-sync";
 
+export const dynamic = 'force-dynamic';
+
 export default async function DashboardPage() {
   const stats = await getStats();
   const recentTransactions = await getRecentTransactions(5);
@@ -44,7 +46,6 @@ export default async function DashboardPage() {
         </div>
         <div className="grid gap-4 md:grid-cols-3">
           <AuditLogComponent />
-        </div>
         </div>
       </div>
     </PageHeader>

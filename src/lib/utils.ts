@@ -29,3 +29,10 @@ export function downloadCsv(csvString: string, filename: string) {
     document.body.removeChild(link);
   }
 }
+
+export function formatDate(date: Date): string {
+  return new Intl.DateTimeFormat('en-IN', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(date);
+}

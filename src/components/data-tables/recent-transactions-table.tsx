@@ -37,6 +37,7 @@ export function RecentTransactionsTable({ data }: RecentTransactionsTableProps) 
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const { isAuthenticated } = useAuth();
+  const [rows, setRows] = useState<AnyTransaction[]>(data);
 
   const handleDelete = (id: string) => {
     if (isAuthenticated) {
@@ -52,13 +53,11 @@ export function RecentTransactionsTable({ data }: RecentTransactionsTableProps) 
       try {
         const result = await deleteTransactionAction(id);
         if (result?.success) {
+          setRows((prev) => prev.filter((t) => t.id !== id));
           toast({
             title: "Success",
             description: "Transaction deleted successfully.",
           });
-          setTimeout(() => {
-            window.location.reload();
-          }, 500);
         } else {
           toast({
             title: "Not found",
@@ -89,14 +88,14 @@ export function RecentTransactionsTable({ data }: RecentTransactionsTableProps) 
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.length === 0 && (
+          {rows.length === 0 && (
             <TableRow>
               <TableCell colSpan={5} className="text-center">
                 No transactions yet.
               </TableCell>
             </TableRow>
           )}
-          {data.map((transaction, index) => (
+          {rows.map((transaction, index) => (
             <TableRow key={transaction.id} className="fade-in" style={{ animationDelay: `${index * 100}ms` }}>
               <TableCell className="font-medium">{transaction.description}</TableCell>
               <TableCell>

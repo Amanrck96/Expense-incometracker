@@ -8,6 +8,8 @@ import { AddExpenseForm } from "@/components/forms/expense-form";
 import { AddIncomeForm } from "@/components/forms/income-form";
 import { BulkDeleteTransactions } from "@/components/forms/bulk-delete-transactions";
 
+export const dynamic = 'force-dynamic';
+
 export default async function TransactionsPage() {
   const [expenses, incomes, customers, items] = await Promise.all([
     getExpenses(),

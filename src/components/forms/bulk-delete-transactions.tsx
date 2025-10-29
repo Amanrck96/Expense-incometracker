@@ -47,7 +47,7 @@ export function BulkDeleteTransactions({ type }: BulkDeleteTransactionsProps) {
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label className="text-right">Cutoff Date</Label>
-              <input type="hidden" name="cutoffDate" value={cutoffDate?.toISOString()} />
+              <input type="hidden" name="cutoffDate" value={cutoffDate?.toISOString() || ''} />
               <DatePicker value={cutoffDate} onChange={setCutoffDate} placeholder="Select date" className="col-span-3" />
             </div>
           </div>
@@ -59,3 +59,4 @@ export function BulkDeleteTransactions({ type }: BulkDeleteTransactionsProps) {
     </Dialog>
   );
 }
+
