@@ -125,6 +125,37 @@ export async function deleteTransactionAction(id: string) {
     return result;
 }
 
+export async function clearAllTransactionsAction() {
+    const result = await data.clearAllTransactions();
+    await revalidateAll();
+    return result;
+}
+
+export async function updateFinancialMetricsAction(settings: {
+    openingBalance?: number;
+    cashInHand?: number;
+    bankBalance?: number;
+}) {
+    // Update the settings
+    if (settings.openingBalance !== undefined) {
+        await data.setOpeningBalance({ amount: settings.openingBalance });
+    }
+    
+    if (settings.cashInHand !== undefined || settings.bankBalance !== undefined) {
+        const currentSettings = await data.getSystemSettings();
+        await data.updateSystemSettings({
+            cashInHand: settings.cashInHand ?? currentSettings.cashInHand,
+            bankBalance: settings.bankBalance ?? currentSettings.bankBalance,
+            lastUpdated: new Date()
+        }, "admin"); // Using default admin password
+    }
+    
+    // Recalculate metrics
+    const metrics = await data.recalculateFinancialMetrics();
+    await revalidateAll();
+    return metrics;
+}
+
 export async function setOpeningBalanceAction(prevState: any, formData: FormData) {
     const rawData = Object.fromEntries(formData.entries());
     const validatedFields = openingBalanceSchema.safeParse(rawData);

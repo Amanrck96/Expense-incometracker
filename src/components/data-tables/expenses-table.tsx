@@ -22,12 +22,7 @@ type ExpensesTableProps = {
   data: Expense[];
 };
 
-const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-  }).format(amount);
-};
+import { formatCurrency } from "@/lib/utils";
 
 export function ExpensesTable({ data }: ExpensesTableProps) {
   const [isPending, startTransition] = useTransition();

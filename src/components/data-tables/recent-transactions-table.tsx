@@ -23,12 +23,7 @@ type RecentTransactionsTableProps = {
   data: AnyTransaction[];
 };
 
-const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-  }).format(amount);
-};
+import { formatCurrency } from "@/lib/utils";
 
 export function RecentTransactionsTable({ data }: RecentTransactionsTableProps) {
   const [isPending, startTransition] = useTransition();

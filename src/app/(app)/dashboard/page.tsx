@@ -7,6 +7,8 @@ import { OpeningBalanceForm } from "@/components/forms/opening-balance-form";
 import { SystemSettingsForm } from "@/components/forms/system-settings-form";
 import { AuditLogComponent } from "@/components/audit-log";
 import { GitHubSync } from "@/components/github-sync";
+import { ClearTransactionsButton } from "@/components/clear-transactions-button";
+import { FinancialMetricsForm } from "@/components/financial-metrics-form";
 
 export const dynamic = 'force-dynamic';
 
@@ -25,8 +27,9 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
                 <Card>
-                <CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between">
                     <CardTitle>Recent Transactions</CardTitle>
+                    <ClearTransactionsButton />
                 </CardHeader>
                 <CardContent>
                     <RecentTransactionsTable data={recentTransactions} />
@@ -36,10 +39,10 @@ export default async function DashboardPage() {
             <div>
                 <Card>
                     <CardHeader>
-                        <CardTitle>System Settings</CardTitle>
+                        <CardTitle>Financial Metrics</CardTitle>
                     </CardHeader>
                     <CardContent>
-                       <OpeningBalanceForm amount={stats.openingBalance} />
+                       <FinancialMetricsForm initialData={stats} />
                     </CardContent>
                 </Card>
             </div>

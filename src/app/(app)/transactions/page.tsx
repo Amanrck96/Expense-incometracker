@@ -1,4 +1,4 @@
-import { getCustomers, getExpenses, getIncomes, getItems } from "@/lib/data";
+import { getCustomers, getExpenses, getIncomes, getItems, getStats } from "@/lib/data";
 import { PageHeader } from "@/components/page-header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,15 +7,18 @@ import { IncomesTable } from "@/components/data-tables/incomes-table";
 import { AddExpenseForm } from "@/components/forms/expense-form";
 import { AddIncomeForm } from "@/components/forms/income-form";
 import { BulkDeleteTransactions } from "@/components/forms/bulk-delete-transactions";
+import { ClearTransactionsButton } from "@/components/clear-transactions-button";
+import { FinancialMetricsForm } from "@/components/financial-metrics-form";
 
 export const dynamic = 'force-dynamic';
 
 export default async function TransactionsPage() {
-  const [expenses, incomes, customers, items] = await Promise.all([
+  const [expenses, incomes, customers, items, stats] = await Promise.all([
     getExpenses(),
     getIncomes(),
     getCustomers(),
     getItems(),
+    getStats(),
   ]);
 
   const creditExpenses = expenses.filter(e => e.isCredit);
@@ -26,6 +29,10 @@ export default async function TransactionsPage() {
       title="Transactions"
       description="Manage your expenses and incomes."
     >
+      <div className="mb-6">
+        <FinancialMetricsForm initialData={stats} />
+      </div>
+      
       <Tabs defaultValue="expenses">
         <div className="flex justify-between items-center">
           <TabsList>
@@ -35,6 +42,7 @@ export default async function TransactionsPage() {
             <TabsTrigger value="credit-incomes">Credit Incomes</TabsTrigger>
           </TabsList>
           <div className="flex gap-2">
+             <ClearTransactionsButton />
              <AddExpenseForm />
              <AddIncomeForm customers={customers} />
           </div>

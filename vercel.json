@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "outputDirectory": ".next",
+  "regions": ["all"],
+  "env": {
+    "NEXT_PUBLIC_APP_ENV": "production",
+    "NEXT_PUBLIC_AUTH_ENABLED": "true",
+    "NEXT_PUBLIC_ENABLE_ANALYTICS": "true"
+  }
+}

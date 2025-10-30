@@ -91,6 +91,29 @@ export async function getStats() {
     };
 }
 
+// Function to clear all transactions
+export async function clearAllTransactions(): Promise<{ success: boolean; message: string }> {
+    await delay(500);
+    expenses = [];
+    incomes = [];
+    // Log this action
+    auditLogs.push({
+        id: `LOG${String(Date.now()).slice(-4)}`,
+        timestamp: new Date(),
+        action: 'CLEAR_ALL_TRANSACTIONS',
+        details: 'All transactions have been cleared',
+        userId: 'system'
+    });
+    return { success: true, message: 'All transactions have been cleared successfully.' };
+}
+
+// Function to update financial metrics automatically
+export async function recalculateFinancialMetrics(): Promise<{ success: boolean; stats: ReturnType<typeof getStats> extends Promise<infer T> ? T : never }> {
+    await delay(300);
+    const stats = await getStats();
+    return { success: true, stats };
+}
+
 export async function getSystemSettings(): Promise<SystemSettings> {
     await delay(100);
     return systemSettings;
